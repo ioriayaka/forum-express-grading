@@ -4,6 +4,7 @@ const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const fs = require('fs')
 const db = require('../models')
 const Restaurant = db.Restaurant
+const User = db.User
 
 const adminController = {
   getRestaurants: (req, res) => {
@@ -116,6 +117,35 @@ const adminController = {
             res.redirect('/admin/restaurants')
           })
       })
+  },
+  //A17 取得使用者列表
+  getUsers: (req, res) => {
+    return User.findAll({ 
+      raw: true, 
+      nest: true 
+    })
+    .then(users => {
+      res.render('admin/users', { users: users })
+    })
+      .catch(err => console.error(err))
+  },
+  //使用者角色權限切換
+  toggleAdmin: (req, res) => {
+    const id = req.params.id
+    return User.findByPk(id)
+    .then(user => {
+      if (user.email === 'root@example.com') {
+        req.flash('error_messages', 'The core manager can\'t be changed')
+        return res.redirect('back')
+      }
+      user.isAdmin === false ? user.isAdmin = true : user.isAdmin = false
+      return user.update({ isAdmin: user.isAdmin })
+        .then(() => {
+          req.flash('success_messages', 'already chaneged！')
+          res.redirect('/admin/users')
+        })
+    })
+    .catch(err => console.log(err))
   }
 }
 
