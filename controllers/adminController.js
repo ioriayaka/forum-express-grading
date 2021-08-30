@@ -9,17 +9,24 @@ const User = db.User
 const Category = db.Category
 const adminController = {
   getRestaurants: (req, res) => {
-    return Restaurant.findAll({ 
+    return Restaurant.findAll({
       raw: true,
       nest: true,
       include: [Category]
-     }).then(restaurants => {
+    }).then(restaurants => {
       //  console.log(restaurants) // 加入 console 觀察資料的變化
       return res.render('admin/restaurants', { restaurants: restaurants })
     })
   },
   createRestaurant: (req, res) => {
-    return res.render('admin/create')
+    Category.findAll({
+      raw: true,
+      nest: true
+    }).then(categories => {
+      return res.render('admin/create', {
+        categories: categories
+      })
+    })
   },
   postRestaurant: (req, res) => {
     if (!req.body.name) {
@@ -38,6 +45,7 @@ const adminController = {
           opening_hours: req.body.opening_hours,
           description: req.body.description,
           image: file ? img.data.link : null,
+          CategoryId: req.body.categoryId
         }).then((restaurant) => {
           req.flash('success_messages', 'restaurant was successfully created')
           return res.redirect('/admin/restaurants')
@@ -51,7 +59,8 @@ const adminController = {
         address: req.body.address,
         opening_hours: req.body.opening_hours,
         description: req.body.description,
-        image: null
+        image: null,
+        CategoryId: req.body.categoryId
       }).then((restaurant) => {
         req.flash('success_messages', 'restaurant was successfully created')
         return res.redirect('/admin/restaurants')
@@ -67,8 +76,16 @@ const adminController = {
     })
   },
   editRestaurant: (req, res) => {
-    return Restaurant.findByPk(req.params.id, { raw: true }).then(restaurant => {
-      return res.render('admin/create', { restaurant: restaurant })
+    Category.findAll({
+      raw: true,
+      nest: true
+    }).then(categories => {
+      return Restaurant.findByPk(req.params.id).then(restaurant => {
+        return res.render('admin/create', {
+          categories: categories,
+          restaurant: restaurant.toJSON()
+        })
+      })
     })
   },
   putRestaurant: (req, res) => {
@@ -90,6 +107,7 @@ const adminController = {
               opening_hours: req.body.opening_hours,
               description: req.body.description,
               image: file ? img.data.link : restaurant.image,
+              CategoryId: req.body.categoryId
             })
               .then((restaurant) => {
                 req.flash('success_messages', 'restaurant was successfully to update')
@@ -107,7 +125,8 @@ const adminController = {
             address: req.body.address,
             opening_hours: req.body.opening_hours,
             description: req.body.description,
-            image: restaurant.image
+            image: restaurant.image,
+            CategoryId: req.body.categoryId
           })
             .then((restaurant) => {
               req.flash('success_messages', 'restaurant was successfully to update')
@@ -127,32 +146,32 @@ const adminController = {
   },
   //A17 取得使用者列表
   getUsers: (req, res) => {
-    return User.findAll({ 
-      raw: true, 
-      nest: true 
+    return User.findAll({
+      raw: true,
+      nest: true
     })
-    .then(users => {
-      res.render('admin/users', { users: users })
-    })
+      .then(users => {
+        res.render('admin/users', { users: users })
+      })
       .catch(err => console.error(err))
   },
   //使用者角色權限切換
   toggleAdmin: (req, res) => {
     const id = req.params.id
     return User.findByPk(id)
-    .then(user => {
-      if (user.email === 'root@example.com') {
-        req.flash('error_messages', 'The core manager can\'t be changed')
-        return res.redirect('back')
-      }
-      user.isAdmin === false ? user.isAdmin = true : user.isAdmin = false
-      return user.update({ isAdmin: user.isAdmin })
-        .then(() => {
-          req.flash('success_messages', 'already chaneged！')
-          res.redirect('/admin/users')
-        })
-    })
-    .catch(err => console.log(err))
+      .then(user => {
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', 'The core manager can\'t be changed')
+          return res.redirect('back')
+        }
+        user.isAdmin === false ? user.isAdmin = true : user.isAdmin = false
+        return user.update({ isAdmin: user.isAdmin })
+          .then(() => {
+            req.flash('success_messages', 'already chaneged！')
+            res.redirect('/admin/users')
+          })
+      })
+      .catch(err => console.log(err))
   }
 }
 
