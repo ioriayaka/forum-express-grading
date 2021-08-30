@@ -46,7 +46,10 @@ module.exports = (app, passport) => {
   app.delete('/admin/restaurants/:id', authenticatedAdmin, adminController.deleteRestaurant)
   //categiry route
   app.get('/admin/categories', authenticatedAdmin, categoryController.getCategories)
-
+  app.post('/admin/categories', authenticatedAdmin, categoryController.postCategory)
+  app.get('/admin/categories/:id', authenticatedAdmin, categoryController.getCategories)
+  app.put('/admin/categories/:id', authenticatedAdmin, categoryController.putCategory)
+  
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
   //新增登入以及登出的路由
