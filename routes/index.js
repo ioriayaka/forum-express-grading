@@ -50,6 +50,9 @@ module.exports = (app, passport) => {
   app.get('/admin/categories/:id', authenticatedAdmin, categoryController.getCategories)
   app.put('/admin/categories/:id', authenticatedAdmin, categoryController.putCategory)
   app.delete('/admin/categories/:id', authenticatedAdmin, categoryController.deleteCategory)
+  // users
+  app.get('/restaurants/:id', authenticated, restController.getRestaurant)
+  
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
   //新增登入以及登出的路由
