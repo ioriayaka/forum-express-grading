@@ -54,6 +54,7 @@ module.exports = (app, passport) => {
   app.get('/restaurants/:id', authenticated, restController.getRestaurant)
   //commont
   app.post('/comments', authenticated, commentController.postComment)
+  app.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
   //新增登入以及登出的路由
