@@ -28,7 +28,6 @@ const restController = {
       const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
       const prev = page - 1 < 1 ? 1 : page - 1
       const next = page + 1 > pages ? pages : page + 1
-
       // clean up restaurant data
       const data = result.rows.map(r => ({
         ...r.dataValues,
@@ -60,6 +59,29 @@ const restController = {
     }).then(restaurant => {
       return res.render('restaurant', {
         restaurant: restaurant.toJSON()
+      })
+    })
+  },
+  //Feeds 最新動態
+  getFeeds: (req, res) => {
+    return Restaurant.findAll({
+      limit: 10,
+      raw: true,
+      nest: true,
+      order: [['createdAt', 'DESC']],
+      include: [Category]
+    }).then(restaurants => {
+      Comment.findAll({
+        limit: 10,
+        raw: true,
+        nest: true,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant]
+      }).then(comments => {
+        return res.render('feeds', {
+          restaurants: restaurants,
+          comments: comments
+        })
       })
     })
   }
