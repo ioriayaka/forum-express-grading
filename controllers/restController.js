@@ -4,6 +4,7 @@ const Category = db.Category
 const pageLimit = 10
 const Comment = db.Comment
 const User = db.User
+const helpers = require('../_helpers')
 const restController = {
   getRestaurants: (req, res) => {
     let offset = 0
@@ -34,7 +35,9 @@ const restController = {
         description: r.dataValues.description.substring(0, 50),
         categoryName: r.dataValues.Category.name,
         //U150 
-        isFavorited: req.user.FavoritedRestaurants.map(d => d.id).includes(r.id)
+        isFavorited: helpers.getUser(req).FavoritedRestaurants.map(d => d.id).includes(r.id),
+        //A21 
+        isLiked: helpers.getUser(req).LikedRestaurants.map(d => d.id).includes(r.id)
       }))
       Category.findAll({
         raw: true,
@@ -56,15 +59,18 @@ const restController = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        { model: User, as: 'FavoritedUsers' },  // 加入關聯資料
+        { model: User, as: 'FavoritedUsers' },  // 加入favorite關聯資料
+        { model: User, as: 'LikedUsers' },  // 加入like關聯資料
         { model: Comment, include: [User] }
       ]
     }).then(restaurant => {
-      const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(req.user.id) // 找出收藏此餐廳的 user
+      const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(helpers.getUser(req)) // 找出收藏此餐廳的 user
+      const isLiked = restaurant.LikedUsers.map(d => d.id).includes(helpers.getUser(req)) // 找出喜歡此餐廳的 user
       restaurant.increment('viewCounts', { by: 1 })
       return res.render('restaurant', {
         restaurant: restaurant.toJSON(),
-        isFavorited: isFavorited  // 將資料傳到前端
+        isFavorited: isFavorited,  // 將資料傳到前端
+        isLiked: isLiked  // 將資料傳到前端
       })
     })
   },
