@@ -31,6 +31,9 @@ module.exports = (app, passport) => {
   app.get('/restaurants', authenticated, restController.getRestaurants)
   //Feeds頁面路由
   app.get('/restaurants/feeds', authenticated, restController.getFeeds)
+  // users
+  app.get('/restaurants/:id', authenticated, restController.getRestaurant)
+  app.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
   // 連到 /admin 頁面就轉到 /admin/restaurants
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/restaurants'))
   // admin user route
@@ -50,8 +53,7 @@ module.exports = (app, passport) => {
   app.get('/admin/categories/:id', authenticatedAdmin, categoryController.getCategories)
   app.put('/admin/categories/:id', authenticatedAdmin, categoryController.putCategory)
   app.delete('/admin/categories/:id', authenticatedAdmin, categoryController.deleteCategory)
-  // users
-  app.get('/restaurants/:id', authenticated, restController.getRestaurant)
+
   // A19 建立 User Profile route
   app.get('/users/:id', authenticated, userController.getUser)
   app.get('/users/:id/edit', authenticated, userController.editUser)

@@ -85,6 +85,25 @@ const restController = {
         comments: comments
       })
     })
+  },
+  // A20 Dashboard 功能
+  getDashboard: (req, res) => {
+    return Promise.all([
+      Restaurant.findByPk(req.params.id, {
+        include: [Category]
+      }),
+      Comment.findAndCountAll({
+        raw: true,
+        nest: true,
+        where: { restaurantId: req.params.id }
+      })
+    ])
+      .then(([restaurant, comments]) => {
+        return res.render('dashboard', {
+          restaurant: restaurant.toJSON(),
+          commentCount: comments.count
+        })
+      })
   }
 }
 
