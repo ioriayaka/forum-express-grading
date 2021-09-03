@@ -12,10 +12,10 @@ module.exports = {
         updatedAt: new Date(),
         // if local : Math.floor(Math.random() * 3) + 1
         // if heroku : Math.floor(Math.random() * 3) * 10 + 5
-        UserId: Math.floor(Math.random() * 3) + 1,
+        UserId: Math.floor(Math.random() * 3) * 10 + 5,
         //if local : Math.floor(Math.random() * 50) + 1
         //if heroku : Math.floor(Math.random() * 50) * 10 + 5
-        RestaurantId: Math.floor(Math.random() * 50) + 1
+        RestaurantId: Math.floor(Math.random() * 50) * 10 + 5
       })
       ), { })
   },
