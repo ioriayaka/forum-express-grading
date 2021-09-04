@@ -102,7 +102,10 @@ const restController = {
   getDashboard: (req, res) => {
     return Promise.all([
       Restaurant.findByPk(req.params.id, {
-        include: [Category]
+        include: [
+          Category,
+          { model: User, as: 'FavoritedUsers' }
+        ]
       }),
       Comment.findAndCountAll({
         raw: true,
@@ -111,10 +114,31 @@ const restController = {
       })
     ])
       .then(([restaurant, comments]) => {
+        const favoritedUserNum = restaurant.FavoritedUsers.length
         return res.render('dashboard', {
           restaurant: restaurant.toJSON(),
-          commentCount: comments.count
+          commentCount: comments.count,
+          favoritedUserNum
         })
+      })
+  },
+  //A22 TOP 10 人氣餐廳功能
+  getTopRestaurant: (req, res) => {
+    return Restaurant.findAll({
+      include: [
+        { model: User, as: 'FavoritedUsers' }
+      ]
+    })
+      .then(restaurants => {
+        restaurants = restaurants.map(restaurant => ({
+          ...restaurant.dataValues,
+          description: restaurant.description.slice(0, 50),
+          favoriteCounts: restaurant.FavoritedUsers.length,
+          isFavorited: restaurant.FavoritedUsers.map(d => d.id).includes(helpers.getUser(req).id)
+        }))
+        restaurants.sort((a, b) => b.favoriteCounts - a.favoriteCounts)
+        restaurants = restaurants.slice(0, 10)
+        return res.render('topRestaurant', { restaurants })
       })
   }
 }

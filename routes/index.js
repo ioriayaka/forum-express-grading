@@ -31,6 +31,8 @@ module.exports = (app, passport) => {
   app.get('/restaurants', authenticated, restController.getRestaurants)
   //Feeds頁面路由
   app.get('/restaurants/feeds', authenticated, restController.getFeeds)
+  //TOP10 餐廳頁面路由
+  app.get('/restaurants/top', authenticated, restController.getTopRestaurant)
   // users
   app.get('/restaurants/:id', authenticated, restController.getRestaurant)
   app.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
