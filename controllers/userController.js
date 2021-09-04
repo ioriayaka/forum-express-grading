@@ -162,8 +162,8 @@ const userController = {
         RestaurantId: req.params.restaurantId
       }
     })
-      .then((favorite) => {
-        favorite.destroy()
+      .then((like) => {
+        like.destroy()
           .then((restaurant) => {
             req.flash('success_messages', 'You don\'t like it!')
             return res.redirect('back')

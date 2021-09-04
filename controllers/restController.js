@@ -64,8 +64,10 @@ const restController = {
         { model: Comment, include: [User] }
       ]
     }).then(restaurant => {
-      const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(helpers.getUser(req)) // 找出收藏此餐廳的 user
-      const isLiked = restaurant.LikedUsers.map(d => d.id).includes(helpers.getUser(req)) // 找出喜歡此餐廳的 user
+      const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(helpers.getUser(req).id) // 找出收藏此餐廳的 user
+      console.log(isFavorited)
+      const isLiked = restaurant.LikedUsers.map(d => d.id).includes(helpers.getUser(req).id) // 找出喜歡此餐廳的 user
+      console.log(isLiked)
       restaurant.increment('viewCounts', { by: 1 })
       return res.render('restaurant', {
         restaurant: restaurant.toJSON(),
