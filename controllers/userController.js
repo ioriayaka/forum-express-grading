@@ -53,27 +53,28 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
-  },//A19 User Profile功能
+  },//A19 User Profile功能-->//A23 更新功能
   getUser: (req, res) => {
-    const userId = req.params.id
-    User.findByPk(userId)
-      .then(user => {
-        Comment.findAndCountAll({
-          raw: true,
-          nest: true,
-          include: [Restaurant],
-          where: { userId: userId }
-        })
-          .then(results => {
-            const commentData = results.rows.map(comment => ({
-              ...comment,
-              restaurantId: comment.Restaurant.id,
-              restaurantImage: comment.Restaurant.image
-            }))
-            const count = results.count
-            return res.render('profile', { user: user.toJSON(), count, comments: commentData })
-          })
+    const UserId = Number(req.params.id)
+    return Promise.all([
+      User.findByPk(UserId, {
+        include: [
+          { model: User, as: 'Followings' },
+          { model: User, as: 'Followers' },
+          { model: Restaurant, as: 'FavoritedRestaurants' }
+        ]
+      }),
+      Comment.findAndCountAll({
+        where: { UserId }, attributes: ['RestaurantId'], group: ['RestaurantId'], include: Restaurant,
+        raw: true, nest: true
+      }),
+    ])
+      .then(([profile, comments]) => {
+        const isFollowed = helpers.getUser(req).Followings.map(d => d.id).includes(UserId)
+        console.log('comments', comments)
+        return res.render('profile', { profile: profile.toJSON(), commentedRestaurants: comments.rows, isFollowed })
       })
+      .catch(error => res.status(422).json(error))
   },
   editUser: (req, res) => {
     if (String(helpers.getUser(req).id) !== String(req.params.id)) {
