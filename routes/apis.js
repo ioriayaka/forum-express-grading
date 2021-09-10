@@ -11,5 +11,7 @@ router.get('/admin/restaurants', adminController.getRestaurants)
 router.get('/admin/restaurants/:id', adminController.getRestaurant)
 // admin categories page
 router.get('/admin/categories', categoryController.getCategories)
+// admin restaurants delete
+router.delete('/admin/restaurants/:id', adminController.deleteRestaurant)
 
 module.exports = router
