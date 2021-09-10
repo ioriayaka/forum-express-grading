@@ -7,6 +7,15 @@ const adminService = {
     return Restaurant.findAll({ include: [Category] }).then(restaurants => {
       callback({ restaurants: restaurants })
     })
+  },
+  deleteRestaurant: (req, res, callback) => {
+    return Restaurant.findByPk(req.params.id)
+      .then((restaurant) => {
+        restaurant.destroy()
+          .then((restaurant) => {
+            callback({ status: 'success', message: '' })
+          })
+      })
   }
 }
 
