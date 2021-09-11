@@ -16,6 +16,11 @@ const restController = {
       return res.render('feeds', data)
     })
   },
+  getDashboard: (req, res) => {
+    restService.getRestaurant(req, res, (data) => {
+      return res.json(data)
+    })
+  },
 }
 
 module.exports = restController

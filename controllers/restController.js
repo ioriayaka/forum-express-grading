@@ -27,27 +27,9 @@ const restController = {
   },
   // A20 Dashboard 功能
   getDashboard: (req, res) => {
-    return Promise.all([
-      Restaurant.findByPk(req.params.id, {
-        include: [
-          Category,
-          { model: User, as: 'FavoritedUsers' }
-        ]
-      }),
-      Comment.findAndCountAll({
-        raw: true,
-        nest: true,
-        where: { restaurantId: req.params.id }
-      })
-    ])
-      .then(([restaurant, comments]) => {
-        const favoritedUserNum = restaurant.FavoritedUsers.length
-        return res.render('dashboard', {
-          restaurant: restaurant.toJSON(),
-          commentCount: comments.count,
-          favoritedUserNum
-        })
-      })
+    restService.getRestaurant(req, res, (data) => {
+      res.render('dashboard', data)
+    })
   },
   //A22 TOP 10 人氣餐廳功能
   getTopRestaurant: (req, res) => {

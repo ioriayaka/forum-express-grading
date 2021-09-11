@@ -91,6 +91,29 @@ const restController = {
       return callback({ restaurants, comments })
     })
   },
+  getDashboard: (req, res, callback) => {
+    // get restaurant id
+    const id = req.params.id
+    Comment.findAndCountAll({
+      where: { RestaurantId: id },
+      raw: true,
+      nest: true
+    })
+      .then((comments) => {
+        const commentNum = comments.count
+        Restaurant.findByPk(id, {
+          include: [
+            Category,
+            { model: User, as: 'FavoritedUsers' }
+          ]
+        })
+          .then((restaurant) => {
+            const favoritedUserNum = restaurant.FavoritedUsers.length
+            callback({ restaurant: restaurant.toJSON(), commentNum, favoritedUserNum })
+          })
+          .catch(err => console.log(err))
+      })
+  },
 }
 
 module.exports = restController
