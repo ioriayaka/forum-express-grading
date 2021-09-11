@@ -161,7 +161,17 @@ const userController = {
             return res.redirect('back')
           })
       })
-  }
+  },
+  clickToLike: (req, res) => {
+    userService.clickToLike(req, res, (data) => {
+      return res.redirect('back')
+    })
+  },
+  removeLike: (req, res) => {
+    userService.removeLike(req, res, (data) => {
+      return res.redirect('back')
+    })
+  },
 }
 
 module.exports = userController

@@ -32,6 +32,8 @@ router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+router.post('/like/:restaurantId', authenticated, userController.clickToLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 
 //admin restaurants page
 router.get('/admin/restaurants', authenticated, authenticatedAdmin, adminController.getRestaurants)

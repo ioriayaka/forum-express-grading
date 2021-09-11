@@ -119,6 +119,26 @@ const userService = {
       return callback({ status: 'success', message: '' })
     })
   },
+  clickToLike: (req, res, callback) => {
+    const UserId = helpers.getUser(req).id
+    const RestaurantId = req.params.restaurantId
+    Like.create({
+      UserId, RestaurantId
+    }).then((like) => {
+      return callback({ status: 'success', message: '' })
+    }).catch(err => console.log(err))
+  },
+  removeLike: (req, res, callback) => {
+    const UserId = helpers.getUser(req).id
+    const RestaurantId = req.params.restaurantId
+    Like.findOne({
+      where: { UserId, RestaurantId }
+    }).then((like) => {
+      like.destroy()
+    }).then((restaurant) => {
+      return callback({ status: 'success', message: '' })
+    }).catch(err => console.log(err))
+  },
 }
 
 module.exports = userService
