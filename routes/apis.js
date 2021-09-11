@@ -14,6 +14,8 @@ router.get('/admin/restaurants', adminController.getRestaurants)
 router.get('/admin/restaurants/:id', adminController.getRestaurant)
 // admin restaurant post
 router.post('/admin/restaurants', upload.single('image'), adminController.postRestaurant)
+// admin put restaurant
+router.put('/admin/restaurants/:id', upload.single('image'), adminController.putRestaurant)
 // admin restaurants delete
 router.delete('/admin/restaurants/:id', adminController.deleteRestaurant)
 
