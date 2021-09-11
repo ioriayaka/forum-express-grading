@@ -55,6 +55,11 @@ let userController = {
       })
     }
   },
+  getUser: (req, res) => {
+    userService.getUser(req, res, (data) => {
+      return res.render('user', data)
+    })
+  },
 }
 
 module.exports = userController

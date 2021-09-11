@@ -9,7 +9,7 @@ const Followship = db.Followship
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const helpers = require('../_helpers')
-
+const userService = require('../services/userService.js')
 const userController = {
   //User 登入功能
   signUpPage: (req, res) => {
@@ -55,26 +55,9 @@ const userController = {
     res.redirect('/signin')
   },//A19 User Profile功能-->//A23 更新功能
   getUser: (req, res) => {
-    const UserId = Number(req.params.id)
-    return Promise.all([
-      User.findByPk(UserId, {
-        include: [
-          { model: User, as: 'Followings' },
-          { model: User, as: 'Followers' },
-          { model: Restaurant, as: 'FavoritedRestaurants' }
-        ]
-      }),
-      Comment.findAndCountAll({
-        where: { UserId }, attributes: ['RestaurantId'], group: ['RestaurantId'], include: Restaurant,
-        raw: true, nest: true
-      }),
-    ])
-      .then(([profile, comments]) => {
-        const isFollowed = helpers.getUser(req).Followings.map(d => d.id).includes(UserId)
-        console.log('comments', comments)
-        return res.render('profile', { profile: profile.toJSON(), commentedRestaurants: comments.rows, isFollowed })
-      })
-      .catch(error => res.status(422).json(error))
+    userService.getUser(req, res, (data) => {
+      return res.render('user', data)
+    })
   },
   editUser: (req, res) => {
     if (String(helpers.getUser(req).id) !== String(req.params.id)) {
