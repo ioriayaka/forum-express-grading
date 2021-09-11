@@ -71,6 +71,26 @@ const restController = {
       })
       .catch(err => console.log(err))
   },
+  getFeeds: (req, res, callback) => {
+    Promise.all([
+      Restaurant.findAll({
+        order: [['createdAt', 'DESC']],
+        limit: 10,
+        raw: true,
+        nest: true,
+        include: [Category]
+      }),
+      Comment.findAll({
+        order: [['createdAt', 'DESC']],
+        limit: 10,
+        raw: true,
+        nest: true,
+        include: [User, Restaurant]
+      })
+    ]).then(([restaurants, comments]) => {
+      return callback({ restaurants, comments })
+    })
+  },
 }
 
 module.exports = restController

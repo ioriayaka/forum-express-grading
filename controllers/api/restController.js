@@ -11,6 +11,11 @@ const restController = {
       res.json(data)
     })
   },
+  getFeeds: (req, res) => {
+    restService.getFeeds(req, res, (data) => {
+      return res.render('feeds', data)
+    })
+  },
 }
 
 module.exports = restController
