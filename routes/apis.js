@@ -20,9 +20,10 @@ const authenticatedAdmin = (req, res, next) => {
     return res.json({ status: 'error', message: 'permission denied' })
   }
 }
+
 router.get('/', authenticated, (req, res) => res.redirect('/api/restaurants'))
 router.get('/restaurants', authenticated, restController.getRestaurants)
-
+router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 //admin restaurants page
 router.get('/admin/restaurants', authenticated, authenticatedAdmin, adminController.getRestaurants)
 // admin restaurant page

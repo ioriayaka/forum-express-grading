@@ -15,22 +15,8 @@ const restController = {
     })
   },
   getRestaurant: (req, res) => {
-    return Restaurant.findByPk(req.params.id, {
-      include: [
-        Category,
-        { model: User, as: 'FavoritedUsers' },  // 加入favorite關聯資料
-        { model: User, as: 'LikedUsers' },  // 加入like關聯資料
-        { model: Comment, include: [User] }
-      ]
-    }).then(restaurant => {
-      const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(helpers.getUser(req).id) // 找出收藏此餐廳的 user
-      const isLiked = restaurant.LikedUsers.map(d => d.id).includes(helpers.getUser(req).id) // 找出喜歡此餐廳的 user
-      restaurant.increment('viewCounts', { by: 1 })
-      return res.render('restaurant', {
-        restaurant: restaurant.toJSON(),
-        isFavorited: isFavorited,  // 將資料傳到前端
-        isLiked: isLiked  // 將資料傳到前端
-      })
+    restService.getRestaurant(req, res, (data) => {
+      res.render('restaurant', data)
     })
   },
   //Feeds 最新動態
