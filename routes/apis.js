@@ -4,6 +4,7 @@ const router = express.Router()
 const multer = require('multer')
 const upload = multer({ dest: 'temp/' })
 
+const userController = require('../controllers/api/userController.js')
 const adminController = require('../controllers/api/adminController.js')
 const categoryController = require('../controllers/api/categoryController')
 const categoryService = require('../services/categoryService.js')
@@ -24,5 +25,8 @@ router.get('/admin/categories', categoryController.getCategories)
 router.post('/admin/categories', categoryController.postCategory)
 router.put('/admin/categories/:id', categoryController.putCategory)
 router.delete('/admin/categories/:id', categoryController.deleteCategory)
+
+// JWT signin
+router.post('/signin', userController.signIn)
 
 module.exports = router
