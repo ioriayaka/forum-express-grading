@@ -34,6 +34,10 @@ router.post('/favorite/:restaurantId', authenticated, userController.addFavorite
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 router.post('/like/:restaurantId', authenticated, userController.clickToLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+// 新增評論
+router.post('/comments', authenticated, commentController.postComment)
+// 刪除評論
+router.delete('/comments/:id', authenticated, authenticateAdmin, commentController.deleteComment)
 router.get('/users/top', authenticated, userController.getTopUser)
 router.post('/following/:userId', authenticated, userController.addFollowing)
 router.delete('/following/:userId', authenticated, userController.removeFollowing)
