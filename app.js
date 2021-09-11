@@ -23,6 +23,7 @@ app.set('view engine', 'handlebars') // 設定使用 Handlebars 做為樣板引�
 app.use(bodyParser.urlencoded({ extended: true }))
 // setup handlebars
 // setup bodyParser
+app.use(bodyParser.json())
 // setup session and flash
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }))
 // setup passport

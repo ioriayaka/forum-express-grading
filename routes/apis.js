@@ -1,5 +1,8 @@
 const express = require('express')
 const router = express.Router()
+// 引入 multer 並設定上傳資料夾 
+const multer = require('multer')
+const upload = multer({ dest: 'temp/' })
 
 const adminController = require('../controllers/api/adminController.js')
 const categoryController = require('../controllers/api/categoryController')
@@ -9,9 +12,11 @@ const categoryService = require('../services/categoryService.js')
 router.get('/admin/restaurants', adminController.getRestaurants)
 // admin restaurant page
 router.get('/admin/restaurants/:id', adminController.getRestaurant)
-// admin categories page
-router.get('/admin/categories', categoryController.getCategories)
+// admin restaurant post
+router.post('/admin/restaurants', upload.single('image'), adminController.postRestaurant)
 // admin restaurants delete
 router.delete('/admin/restaurants/:id', adminController.deleteRestaurant)
 
+// admin categories page
+router.get('/admin/categories', categoryController.getCategories)
 module.exports = router

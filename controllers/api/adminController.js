@@ -10,6 +10,11 @@ const adminController = {
       return res.json(data)
     })
   },
+  postRestaurant: (req, res) => {
+    adminService.postRestaurant(req, res, (data) => {
+      return res.json(data)
+    })
+  },
   getRestaurant: (req, res) => {
     return Restaurant.findByPk(req.params.id, { include: [Category] }).then(restaurant => 
     {
