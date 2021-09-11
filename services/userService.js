@@ -98,6 +98,27 @@ const userService = {
         })
     }
   },
+  addFavorite: (req, res, callback) => {
+    const UserId = helpers.getUser(req).id
+    const RestaurantId = req.params.restaurantId
+    Favorite.create({
+      UserId,
+      RestaurantId
+    }).then((favorite) => {
+      return callback({ status: 'success', message: '' })
+    })
+  },
+  removeFavorite: (req, res, callback) => {
+    const UserId = helpers.getUser(req).id
+    const RestaurantId = req.params.restaurantId
+    Favorite.findOne({
+      where: { UserId, RestaurantId }
+    }).then((favorite) => {
+      favorite.destroy()
+    }).then((restaurant) => {
+      return callback({ status: 'success', message: '' })
+    })
+  },
 }
 
 module.exports = userService

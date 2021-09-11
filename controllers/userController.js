@@ -82,29 +82,14 @@ const userController = {
   },
   //加入/移除最愛功能
   addFavorite: (req, res) => {
-    return Favorite.create({
-      UserId: helpers.getUser(req).id,
-      RestaurantId: req.params.restaurantId
+    userService.addFavorite(req, res, (data) => {
+      return res.redirect('back')
     })
-      .then((restaurant) => {
-        req.flash('success_messages', '已添加到我的最愛!')
-        return res.redirect('back')
-      })
   },
   removeFavorite: (req, res) => {
-    return Favorite.findOne({
-      where: {
-        UserId: helpers.getUser(req).id,
-        RestaurantId: req.params.restaurantId
-      }
+    userService.removeFavorite(req, res, (data) => {
+      return res.redirect('back')
     })
-      .then((favorite) => {
-        req.flash('success_messages', '已從我的最愛移除!')
-        favorite.destroy()
-          .then((restaurant) => {
-            return res.redirect('back')
-          })
-      })
   },
   // A21 Like/Unlike功能
   addLike: (req, res) => {
