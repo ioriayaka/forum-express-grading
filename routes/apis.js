@@ -34,6 +34,10 @@ router.post('/favorite/:restaurantId', authenticated, userController.addFavorite
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 router.post('/like/:restaurantId', authenticated, userController.clickToLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+router.get('/users/top', authenticated, userController.getTopUser)
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
+
 
 //admin restaurants page
 router.get('/admin/restaurants', authenticated, authenticatedAdmin, adminController.getRestaurants)

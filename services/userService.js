@@ -139,6 +139,41 @@ const userService = {
       return callback({ status: 'success', message: '' })
     }).catch(err => console.log(err))
   },
+  getTopUser: (req, res, callback) => {
+    return User.findAll({
+      include: [
+        { model: User, as: 'Followers' }
+      ]
+    }).then((users) => {
+      users = users.map(user => ({
+        ...user.dataValues,
+        FollowerCount: user.Followers.length,
+        isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(user.id)
+      }))
+      users = users.sort((a, b) => b.FollowerCount - a.FollowerCount)
+      return callback({ users })
+    })
+  },
+  addFollowing: (req, res, callback) => {
+    const followerId = helpers.getUser(req).id
+    const followingId = req.params.userId
+    Followship.create({
+      followerId, followingId
+    }).then(((followship) => {
+      return callback({ status: 'success', message: '' })
+    }))
+  },
+  removeFollowing: (req, res, callback) => {
+    const followerId = helpers.getUser(req).id
+    const followingId = req.params.userId
+    Followship.findOne({
+      where: { followerId, followingId }
+    }).then((followship) => {
+      followship.destroy()
+    }).then((followship) => {
+      return callback({ status: 'success', message: '' })
+    })
+  }
 }
 
 module.exports = userService

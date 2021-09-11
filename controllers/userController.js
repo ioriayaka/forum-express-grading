@@ -172,6 +172,21 @@ const userController = {
       return res.redirect('back')
     })
   },
+  getTopUser: (req, res) => {
+    userService.getTopUser(req, res, (data) => {
+      return res.render('topUser', data)
+    })
+  },
+  addFollowing: (req, res) => {
+    userService.addFollowing(req, res, (data) => {
+      return res.redirect('back')
+    })
+  },
+  removeFollowing: (req, res) => {
+    userService.removeFollowing(req, res, (data) => {
+      return res.redirect('back')
+    })
+  }
 }
 
 module.exports = userController
