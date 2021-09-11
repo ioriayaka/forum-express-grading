@@ -24,7 +24,7 @@ const authenticatedAdmin = (req, res, next) => {
 router.get('/', authenticated, (req, res) => res.redirect('/api/restaurants'))
 
 router.get('/users/:id', authenticated, userController.getUser)
-
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/top', authenticated, restController.getTopRestaurants)

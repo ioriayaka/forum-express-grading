@@ -70,38 +70,15 @@ const userController = {
       })
   },
   putUser: (req, res) => {
-    if (!req.body.name) {
-      req.flash('error_messages', '使用者名稱為必填資訊！')
-      return res.redirect('back')
-    }
-    const { file } = req
-    if (file) {
-      imgur.setClientID(IMGUR_CLIENT_ID)
-      imgur.upload(file.path, (err, img) => {
-        if (err) console.log(`Error: ${err}`)
-        return User.findByPk(req.params.id).then(user => {
-          user.update({
-            name: req.body.name,
-            image: file ? img.data.link : user.image
-          }).then(() => {
-            req.flash('success_messages', '已成功修改使用者資料')
-            res.redirect(`/users/${req.params.id}`)
-          })
-        })
-      })
-    } else {
-      return User.findByPk(req.params.id).then(user => {
-        user.update({
-          name: req.body.name,
-          image: user.image
-        })
-          .then(() => {
-            req.flash('success_messages', '已成功修改使用者資料')
-            res.redirect(`/users/${req.params.id}`)
-          })
-          .catch(err => console.error(err))
-      })
-    }
+    userService.putUser(req, res, (data) => {
+      if (data['status'] === 'error') {
+        req.flash('error_messages', data['message'])
+        return res.redirect('back')
+      } else {
+        req.flash('success_messages', data['message'])
+        return res.redirect(`/users/${req.params.id}`)
+      }
+    })
   },
   //加入/移除最愛功能
   addFavorite: (req, res) => {

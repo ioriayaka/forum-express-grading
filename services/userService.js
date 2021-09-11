@@ -60,6 +60,44 @@ const userService = {
       return callback({ userProfile: user.toJSON(), loginUserId, resNum, comNum, followerNum, followingNum, restaurants, isFollowed, followers, followings, commentedRes })
     })
   },
+  putUser: (req, res, callback) => {
+    const { name } = req.body
+    const id = req.params.id
+
+    if (Number(id) !== helpers.getUser(req).id) {
+      return callback({ status: 'error', message: "cannot edit other user's profile" })
+    }
+
+    if (!name) {
+      return callback({ status: 'error', message: "name didn't exist" })
+    }
+
+    const { file } = req
+    if (file) {
+      imgur.setClientID(IMGUR_CLIENT_ID);
+      imgur.upload(file.path, (err, img) => {
+        return User.findByPk(id)
+          .then((user) => {
+            user.update({
+              name,
+              image: file ? img.data.link : user.image,
+            }).then((user) => {
+              callback({ status: 'success', message: 'user was successfully to update' })
+            })
+          })
+      })
+    } else {
+      return User.findByPk(id)
+        .then((user) => {
+          user.update({
+            name,
+            image: user.image,
+          }).then((user) => {
+            callback({ status: 'success', message: 'user was successfully to update' })
+          })
+        })
+    }
+  },
 }
 
 module.exports = userService

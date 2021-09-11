@@ -37,7 +37,7 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 //Feeds頁面路由
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 //TOP10 餐廳頁面路由
-router.get('/restaurants/top', authenticated, restController.getTopRestaurant)
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 // users
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
